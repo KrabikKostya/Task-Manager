@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+    {% block content %}
+        <a href="{% url 'form' %}" class="btn-form"> + </a>
+        <div class="wrapper">
+            <div class="conteiner">
+                <div class="content">
+                    {% if tascks %}
+                        <div class="task-list">
+                            <ul>
+                                {% for a in tascks %}
+                                    <li class="task">
+                                        {% if a.tasckStatus %}
+                                            <p class="dark">
+                                                {% comment %} <img src="{% static 'taskmanager/img/icons/checkbox.png' %}"> {% endcomment %}{{a.id}}. {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
+                                            </p>
+                                        {% else %}
+                                            <form id="form" action="{% url 'edit' a.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" name="save{{ a.id }}" class="btn" style="display: none">qwertyuiop</button>{{ form.tasckStatus }}{{a.id}}. {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}} 
+                                            </form>
+                                            <a href="{% url 'edit_task' a.id %}" class="btn-edit">🖋</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="wrapper">
+                            <div class="conteiner">
+                                <div class="content">
+                                    Пока что у вас нет задач<br>
+                                    <a href="{% url 'form' %}"> + </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'taskmanager/js/scripts.js' %}"></script>
+    {% endblock %}

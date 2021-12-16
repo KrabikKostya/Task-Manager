@@ -1,0 +1,295 @@
+@charset "UTF-8";
+
+/*
+Зброс стилей
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+:focus,
+:active {
+    outline: none;
+}
+
+a:focus,
+a:active {
+    outline: none;
+}
+
+nav,
+footer,
+header,
+aside {
+    display: block;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    font-size: 100%;
+    line-height: 1;
+    font-style: 15px;
+    -ms-text-sizi-adjast: 100%;
+    -moz-text-sizi-adjast: 100%;
+    -webkit-text-sizi-adjast: 100%;
+}
+
+input,
+button,
+textarea {
+    font-family: inherit;
+}
+
+input::-ms-clear {
+    display: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+button::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+
+a,
+a:visited,
+a:hover {
+    text-decoration: none;
+}
+
+ul li {
+    list-style: none;
+}
+
+img {
+    vertical-align: top;
+}
+
+h1,
+h2,
+h3,
+h4 h5,
+h6 {
+    font-size: inherit;
+    font-weight: 500;
+}
+
+h1 {
+    font-size: 30px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+.form {
+    position: relative;
+    margin: 0, auto;
+}
+
+* {
+    background: rgb(32, 32, 32);
+    color: rgb(255, 255, 255);
+    transition: all 0.5s;
+    font-size: 15px;
+}
+
+.shown{
+    display: block;
+    margin-top: 10px;
+}
+
+.hidden{
+    display: none;
+}
+
+body {
+    position: relative;
+    padding: 1%;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    height: 100%;
+    min-width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    flex: 1;
+}
+
+
+
+.checkbox {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox__input {
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+    cursor: pointer;
+    border-radius: 25%;
+    margin-right: 5px;
+}
+
+ul{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+li{
+    position: relative;
+    display: flex;
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 20px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    background-color: transparent;
+    justify-content: space-between;
+    width: 90vw;
+}
+
+p{
+    position: relative;
+    text-decoration: line-through;
+    font-size: 17.5px;
+}
+
+.btn-edit{
+    display: flex;
+    border-radius: 50%;
+    border: 1px solid;
+    padding: 5px;
+    margin-left: 25px;
+    text-align: center;
+    width: 35px;
+    height: 35px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-edit:hover {
+    background: rgba(255, 255, 128, 0.5);
+}
+
+.btn-form:hover{
+    background: rgba(128, 255, 128, 0.5);
+}
+
+input{
+    display: block;
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 5px;
+}
+
+input[type="checkbox"]{
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.btn{
+    display: block;
+    border-radius: 10px;
+    border: 1px solid;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+.dark{
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#tasckStatusPeriodical{
+    position: relative;
+    z-index: 0;
+}
+
+@media (max-width: 800px) {
+    .body h1 {
+        font-size: calc(40px + 17 * ((100vw - 320px) / 1536));
+    }
+
+    .body p {
+        font-size: calc(15px + 8.5 * ((100vw - 320px) / 1536));
+    }
+
+    .body h2 {
+        font-size: calc(30px + 17 * ((100vw - 320px) / 1536));
+    }
+
+    .body h3 {
+        font-size: calc(20px + 17 * ((100vw - 320px) / 1536));
+    }
+
+    li{
+        width: 80vw;
+    }
+
+    .btn-form {
+        bottom: 25px;
+    }
+}
+
+@media (min-width: 800px) {
+    .body h1 {
+        font-size: calc(40px + 17 * ((100vw) / 1536));
+    }
+
+    .body h2 {
+        font-size: calc(30px + 17 * ((100vw) / 1536));
+    }
+
+    .body h3 {
+        font-size: calc(20px + 17 * ((100vw) / 1536));
+    }
+
+    .body p {
+        font-size: calc(15px + 8.5 * ((100vw) / 1536));
+    }
+
+    .btn-form {
+        display: block;
+        border-radius: 50%;
+        border: 1px solid;
+        padding-left: auto;
+        font-size: 100px;
+        text-align: center;
+        width: 102.5px;
+        position: fixed;
+        bottom: 20px;
+        right: 22.5px;
+    }
+}
+
+form{
+    display: block;
+}
+
+input{
+    width: 425%;
+}
+
+input#tasckStatusPeriodical {
+    width: 10%;
+}

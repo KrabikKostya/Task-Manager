@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="wrapper">
+    <div class="conteiner">
+        <div class="content">
+            <div class="form">
+                {{ form.tasckStartOfTheEventDate.errors }}<br>
+                <form action="{% url 'form' %}" method="post" class="form-horizontal">
+                    {% csrf_token %}
+                    {{ form.tasckTitle }}<br>
+                    {{ form.tasckDescription }}<br>
+                    {{ form.tasckStartOfTheEventDate }}<br>
+                    {{ form.tasckStartOfTheEventTime}}<br>
+                    {{ form.tasckDuration }}<br>
+                    {{ form.tasckTravelTime }}<br>
+                    {{ form.tasckPlace }}<br>
+                    Нужно повторять задачу ? {{form.tasckStatusPeriodical}}
+                    {{ form.tasckPeriodical }}<br>
+                    <button type="submit" class="btn">
+                        Создать заметку
+                    </button>
+                    <span>
+                        {{ error }}
+                    </span>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="{% static 'taskmanager/js/jquery-3.6.0.js' %}"></script>
+    <script src="{% static 'taskmanager/js/calendar.js' %}"></script>
+    <script src="{% static 'taskmanager/js/pereodical.js' %}"></script>
+    <script>
+        $( function() {
+            $( "#datepicker" ).datepicker();
+    } );
+    </script>
+{% endblock %}

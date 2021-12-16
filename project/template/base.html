@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+    {% block head %}
+    {% load static %}
+        <head>
+            <meta charset="utf-8">
+            <link rel="stylesheet" href="{% static 'taskmanager/css/jquery-ui.css' %}">
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" type="text/css" href="{% static 'taskmanager/css/normalize.css' %}"/>
+            <link rel="stylesheet" type="text/css" href="{% static 'taskmanager/css/style.css' %}"/>
+            <title>
+                Task Manager
+            </title>
+        </head>
+    {% endblock %}
+    <body>
+        {% block content %}
+            <div class="wrapper">
+                <div class="conteiner">
+                    <div class="content">
+                        
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+    </body>
+</html>
