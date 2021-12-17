@@ -131,4 +131,10 @@ class TasckForm(ModelForm):
                 tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
             elif "месяц" in tasckPeriodical.lower() or "месяцев" in tasckPeriodical.lower() or "месяца" in tasckPeriodical.lower():
                 tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
+            elif "год" in tasckPeriodical.lower() or "года" in tasckPeriodical.lower() or "лет" in tasckPeriodical.lower():
+                tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*365.25))
+            elif "час" in tasckPeriodical.lower() or "часа" in tasckPeriodical.lower() or "часов" in tasckPeriodical.lower():
+                tasckPeriodical = timedelta(hours=round(int(tasckPeriodical[0])))
+            elif "минута" in tasckPeriodical.lower() or "минут" in tasckPeriodical.lower() or "минуты" in tasckPeriodical.lower():
+                tasckPeriodical = timedelta(minutes=round(int(tasckPeriodical[0])))
         return tasckPeriodical
