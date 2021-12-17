@@ -9,6 +9,6 @@ class Tasck(models.Model):
     tasckStatus = models.BooleanField("Задача выполнена ?")
     tasckStartOfTheEventDate = models.DateField("Дата начала мероприятия")
     tasckStatusPeriodical = models.BooleanField("Задача переодическая ?")
-    tasckPeriodical = models.DurationField("Период, через который нужно напоминать", null=True)
+    tasckPeriodical = models.CharField("Период, через который нужно напоминать", null=True, max_length=100)
     def __str__(self):
         return self.tasckTitle

@@ -81,7 +81,7 @@ class TasckForm(ModelForm):
         self.fields["tasckPeriodical"].widget.attrs.update({
             "type": "time",
             "class": "input-text hidden",
-            "placeholder": "Период следующего напоминания (часы:минуты:секунды)",
+            "placeholder": "Период следующего напоминания (Например: 1 час, 2 дня 6 месяцев и так далие)",
             "size": "50",
             "id": "tasckPeriodical"
         })
@@ -107,18 +107,28 @@ class TasckForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         tasckStartOfTheEventDate = self.cleaned_data["tasckStartOfTheEventDate"]
-        tasckDuration = self.cleaned_data.get("tasckDuration")
-        tasckTravelTime = self.cleaned_data.get("tasckTravelTime")
-        tasckStartOfTheEventTime = self.cleaned_data.get("tasckStartOfTheEventTime")
-        tasckStatusPeriodical = self.cleaned_data.get("tasckStatusPeriodical")
+        tasckDuration = self.cleaned_data["tasckDuration"]
+        tasckTravelTime = self.cleaned_data["tasckTravelTime"]
+        tasckStartOfTheEventTime = self.cleaned_data["tasckStartOfTheEventTime"]
         tasckStartOfTheEventTime1 = timedelta(
             seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
         for i in range(1, len(Tasck.objects.all())+1):
             task = Tasck.objects.get(id=i)
             if not task.tasckStatus:
-                if not tasckStatusPeriodical:
-                    if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
-                        if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime:
-                            raise ValidationError(
-                                "Ваша задача накладывается на другую задачу", code="invalid")
+                if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
+                    if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime:
+                        raise ValidationError(
+                            "Ваша задача накладывается на другую задачу", code="invalid")
         return cleaned_data
+
+    def clean_tasckPeriodical(self):
+        tasckPeriodical = self.cleaned_data.get("tasckPeriodical")
+        tasckPeriodical = str(tasckPeriodical)
+        if tasckPeriodical.isupper():
+            return str(tasckPeriodical).lower()
+        else:
+            if "день" in tasckPeriodical.lower() or "дня" in tasckPeriodical.lower() or "дней" in tasckPeriodical.lower():
+                tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
+            elif "месяц" in tasckPeriodical.lower() or "месяцев" in tasckPeriodical.lower() or "месяца" in tasckPeriodical.lower():
+                tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
+        return tasckPeriodical
