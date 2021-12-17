@@ -5,9 +5,9 @@
     <div class="conteiner">
         <div class="content">
             <div class="form">
-                {{ form.tasckStartOfTheEventDate.errors }}<br>
                 <form action="{% url 'form' %}" method="post" class="form-horizontal">
                     {% csrf_token %}
+                    {{ form.errors.name }}
                     {{ form.tasckTitle }}<br>
                     {{ form.tasckDescription }}<br>
                     {{ form.tasckStartOfTheEventDate }}<br>
