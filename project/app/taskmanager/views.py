@@ -80,11 +80,7 @@ def edit_task(request, id):
                 )
                 task.tasckStatusPeriodical = bool(request.POST.get("tasckStatusPeriodical"))
                 if task.tasckPeriodical != None:
-                    task.tasckPeriodical = timedelta(
-                        hours=int(str(request.POST.get("tasckPeriodical")).split(":")[0]),
-                        minutes=int(str(request.POST.get("tasckPeriodical")).split(":")[1]),
-                        seconds=int(str(request.POST.get("tasckPeriodical")).split(":")[2])
-                    )
+                    task.tasckPeriodical = request.POST.get("tasckPeriodical")
                 task.save()
                 return redirect('index')
             else:
