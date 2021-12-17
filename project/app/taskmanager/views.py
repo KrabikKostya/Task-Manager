@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from .forms import TasckForm
 from .models import Tasck
@@ -20,7 +19,6 @@ def form(request):
             form.save()
             return redirect('index')
         else:
-            form.add_error(None, "Ваша задача накладывается на другую задачу")
             error = "Ошибка валидации, проверьте, правильно ли вы заполнили все поля, скорее всего ваша задача накладывается на другую задачу"
     form = TasckForm
     data ={
