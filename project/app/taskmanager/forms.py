@@ -140,5 +140,11 @@ class TasckForm(ModelForm):
             elif "неделя" in tasckPeriodical.lower() or "недели" in tasckPeriodical.lower() or "недель" in tasckPeriodical.lower():
                 tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
             else:
-                raise ValidationError("Ошибка, неправильно введён период повторения задачи", code="invalid")
+                tasckPeriodical = tasckPeriodical.split()
+                try:
+                    tasckPeriodical = tasckPeriodical[1].split(":")
+                    for i in tasckPeriodical:
+                        i = int(i)
+                except ValueError:
+                    raise ValidationError("Ошибка, неправильно введён период повторения задачи", code="invalid")
         return tasckPeriodical
