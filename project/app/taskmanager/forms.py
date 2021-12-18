@@ -127,21 +127,22 @@ class TasckForm(ModelForm):
         if tasckPeriodical.isupper():
             return str(tasckPeriodical).lower()
         else:
-            if "день" in tasckPeriodical.lower() or "дня" in tasckPeriodical.lower() or "дней" in tasckPeriodical.lower():
+            tasckPeriodical = tasckPeriodical.split()
+            if "день" in tasckPeriodical[1].lower() or "дня" in tasckPeriodical[1].lower() or "дней" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
-            elif "месяц" in tasckPeriodical.lower() or "месяцев" in tasckPeriodical.lower() or "месяца" in tasckPeriodical.lower():
+            elif "месяц" in tasckPeriodical[1].lower() or "месяцев" in tasckPeriodical[1].lower() or "месяца" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
-            elif "год" in tasckPeriodical.lower() or "года" in tasckPeriodical.lower() or "лет" in tasckPeriodical.lower():
+            elif "год" in tasckPeriodical[1].lower() or "года" in tasckPeriodical[1].lower() or "лет" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*365.25))
-            elif "час" in tasckPeriodical.lower() or "часа" in tasckPeriodical.lower() or "часов" in tasckPeriodical.lower():
+            elif "час" in tasckPeriodical[1].lower() or "часа" in tasckPeriodical[1].lower() or "часов" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(hours=round(int(tasckPeriodical[0])))
-            elif "минута" in tasckPeriodical.lower() or "минут" in tasckPeriodical.lower() or "минуты" in tasckPeriodical.lower():
+            elif "минута" in tasckPeriodical[1].lower() or "минут" in tasckPeriodical[1].lower() or "минуты" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(minutes=round(int(tasckPeriodical[0])))
-            elif "неделя" in tasckPeriodical.lower() or "недели" in tasckPeriodical.lower() or "недель" in tasckPeriodical.lower():
+            elif "неделя" in tasckPeriodical[1].lower() or "недели" in tasckPeriodical[1].lower() or "недель" in tasckPeriodical[1].lower():
                 tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
             else:
-                tasckPeriodical = tasckPeriodical.split()
                 try:
+                    int(tasckPeriodical[0])
                     tasckPeriodical = tasckPeriodical[1].split(":")
                     for i in tasckPeriodical:
                         i = int(i)
