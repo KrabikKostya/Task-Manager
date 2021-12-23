@@ -113,11 +113,22 @@ class TasckForm(ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         tasckStartOfTheEventDate = self.cleaned_data["tasckStartOfTheEventDate"]
-        tasckDuration = self.cleaned_data["tasckDuration"]
-        tasckTravelTime = self.cleaned_data["tasckTravelTime"]
-        tasckStartOfTheEventTime = self.cleaned_data["tasckStartOfTheEventTime"]
-        tasckStartOfTheEventTime1 = timedelta(
-            seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
+        try:
+            tasckDuration = self.cleaned_data["tasckDuration"]
+        except KeyError:
+            self.add_error(None, "Неправильно введена продолжительность мероприятия")
+        try:
+            tasckTravelTime = self.cleaned_data["tasckTravelTime"]
+        except KeyError:
+            self.add_error(None, "Неправильно введено время на дорогу")
+        try:
+            tasckStartOfTheEventTime = self.cleaned_data["tasckStartOfTheEventTime"]
+            tasckStartOfTheEventTime1 = timedelta(seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
+        except KeyError:
+            self.add_error(None, "Неправильно введено время на дорогу")
+        tasckTitle = self.cleaned_data["tasckTitle"]
+        tasckDescription = self.cleaned_data["tasckDescription"]
+        tasckPlace = self.cleaned_data["tasckPlace"]
         for i in range(1, len(Tasck.objects.all())+1):
             task = Tasck.objects.get(id=i)
             if not task.tasckStatus:
