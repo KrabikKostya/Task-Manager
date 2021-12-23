@@ -19,13 +19,9 @@ class TasckForm(ModelForm):
             "tasckTravelTime",
             "tasckStatus",
             "tasckStatusPeriodical",
-            "tasckPeriodical"
+            "tasckPeriodical",
+            "tasckId"
         ]
-        error_messages = {
-            NON_FIELD_ERRORS: {
-                'unique_together': "%(model_name)s's %(field_labels)s are not unique.",
-            }
-        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tasckTitle"].widget.attrs.update({
@@ -91,6 +87,7 @@ class TasckForm(ModelForm):
             "size": "50",
             "id": "tasckPeriodical"
         })
+        self.fields["tasckId"].required = False
 
     def clean_tasckTitle(self):
         tasckTitle = self.cleaned_data["tasckTitle"]
@@ -126,13 +123,10 @@ class TasckForm(ModelForm):
             tasckStartOfTheEventTime1 = timedelta(seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
         except KeyError:
             self.add_error(None, "Неправильно введено время на дорогу")
-        # tasckTitle = self.cleaned_data["tasckTitle"]
-        # tasckDescription = self.cleaned_data["tasckDescription"]
-        # tasckPlace = self.cleaned_data["tasckPlace"]
+        tasckId = self.cleaned_data["tasckId"]
         for i in range(1, len(Tasck.objects.all())+1):
-            task = Tasck.objects.get(id=i)
-            
-            if not task.tasckStatus:
+            task = Tasck.objects.get(tasckId=i)
+            if not task.tasckStatus and len(Tasck.objects.all())>1 and tasckId != i:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
                         self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))
@@ -173,3 +167,8 @@ class TasckForm(ModelForm):
             except ValueError:
                 self.add_error(None, "Ошибка, неправильно введён период повторения задачи")
         return tasckPeriodical
+
+    def clean_tasckId(self):
+        data = self.cleaned_data["tasckId"]
+        data = len(Tasck.objects.all())+1
+        return data
