@@ -156,8 +156,7 @@ class TasckForm(ModelForm):
                         tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
                     else:
                         try:
-                            int(tasckPeriodical[0])
-                            tmp = 0
+                            tmp = int(tasckPeriodical[0])
                             for i in tasckPeriodical[-1].split(":"):
                                 tmp = int(i)
                         except ValueError:
