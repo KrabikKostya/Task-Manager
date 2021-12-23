@@ -123,8 +123,7 @@ class TasckForm(ModelForm):
             if not task.tasckStatus:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime:
-                        self.add_error(
-                            None, ("Ваша задача накладывается на другую задачу: "+str(task)))
+                        self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))
         return cleaned_data
 
     def clean_tasckPeriodical(self):
@@ -156,11 +155,9 @@ class TasckForm(ModelForm):
                             for i in tmp:
                                 tmp2 = int(i)
                         except ValueError:
-                            self.add_error(
-                                None, "Ошибка, неправильно введён период повторения задачи")
+                            self.add_error(None, "Ошибка, неправильно введён период повторения задачи")
                 else:
                     return None
             except ValueError:
-                self.add_error(
-                    None, "Ошибка, неправильно введён период повторения задачи")
+                self.add_error(None, "Ошибка, неправильно введён период повторения задачи")
         return tasckPeriodical
