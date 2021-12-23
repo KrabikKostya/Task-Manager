@@ -170,5 +170,6 @@ class TasckForm(ModelForm):
 
     def clean_tasckId(self):
         data = self.cleaned_data["tasckId"]
-        data = len(Tasck.objects.all())+1
+        if data == None:
+            data = len(Tasck.objects.all())+1
         return data
