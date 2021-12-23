@@ -7,4 +7,8 @@ scripts.js
 pereodical.js
 calendar.js
 style.css
+base.html
+index.html
+form.html
+form_edit.html
 Являются служебными и их трогать нельзя
