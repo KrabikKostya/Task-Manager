@@ -293,3 +293,8 @@ input{
 input#tasckStatusPeriodical {
     width: 10%;
 }
+
+.errorlist{
+    border: none;
+    color: red
+}

@@ -294,7 +294,7 @@ input#tasckStatusPeriodical {
     width: 10%;
 }
 
-span{
-    margin-top: 10px;
-    color: red;
+.errorlist{
+    border: none;
+    color: red
 }

@@ -1,8 +1,9 @@
 from typing import ParamSpecArgs
 from datetime import timedelta
 from .models import Tasck
-from django.forms import ModelForm
-from django.core.exceptions import ValidationError
+from django.forms import ModelForm, ValidationError
+#from django.core.exceptions import ValidationError
+from django.core.exceptions import NON_FIELD_ERRORS
 
 
 class TasckForm(ModelForm):
@@ -20,6 +21,11 @@ class TasckForm(ModelForm):
             "tasckStatusPeriodical",
             "tasckPeriodical"
         ]
+        error_messages = {
+            NON_FIELD_ERRORS: {
+                'unique_together': "%(model_name)s's %(field_labels)s are not unique.",
+            }
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tasckTitle"].widget.attrs.update({
@@ -117,8 +123,8 @@ class TasckForm(ModelForm):
             if not task.tasckStatus:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime:
-                        raise ValidationError(
-                            "Ваша задача накладывается на другую задачу", code="invalid")
+                        self.add_error(
+                            None, ("Ваша задача накладывается на другую задачу: "+str(task)))
         return cleaned_data
 
     def clean_tasckPeriodical(self):
@@ -127,25 +133,34 @@ class TasckForm(ModelForm):
         if tasckPeriodical.isupper():
             return str(tasckPeriodical).lower()
         else:
-            tasckPeriodical = tasckPeriodical.split()
-            if "день" in tasckPeriodical[1].lower() == "дня" in tasckPeriodical[1].lower() == "дней" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
-            elif "месяц" in tasckPeriodical[1].lower() == "месяцев" in tasckPeriodical[1].lower() == "месяца" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
-            elif "год" in tasckPeriodical[1].lower() == "года" in tasckPeriodical[1].lower() == "лет" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*365.25))
-            elif "час" in tasckPeriodical[1].lower() == "часа" in tasckPeriodical[1].lower() == "часов" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(hours=round(int(tasckPeriodical[0])))
-            elif "минута" in tasckPeriodical[1].lower() == "минут" in tasckPeriodical[1].lower() == "минуты" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(minutes=round(int(tasckPeriodical[0])))
-            elif "неделя" in tasckPeriodical[1].lower() == "недели" in tasckPeriodical[1].lower() == "недель" in tasckPeriodical[1].lower():
-                tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
-            else:
-                try:
-                    int(tasckPeriodical[0])
-                    tasckPeriodical = tasckPeriodical[1].split(":")
-                    for i in tasckPeriodical:
-                        i = int(i)
-                except ValueError:
-                    raise ValidationError("Ошибка, неправильно введён период повторения задачи", code="invalid")
+            try:
+                tasckPeriodical = tasckPeriodical.split()
+                print(tasckPeriodical)
+                if len(tasckPeriodical) > 0 and tasckPeriodical[0] != 'None':
+                    if "день" in tasckPeriodical[1].lower() or "дня" in tasckPeriodical[1].lower() or "дней" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
+                    elif "месяц" in tasckPeriodical[1].lower() or "месяцев" in tasckPeriodical[1].lower() or "месяца" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
+                    elif "год" in tasckPeriodical[1].lower() or "года" in tasckPeriodical[1].lower() or "лет" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*365.25))
+                    elif "час" in tasckPeriodical[1].lower() or "часа" in tasckPeriodical[1].lower() or "часов" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(hours=round(int(tasckPeriodical[0])))
+                    elif "минута" in tasckPeriodical[1].lower() or "минут" in tasckPeriodical[1].lower() or "минуты" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(minutes=round(int(tasckPeriodical[0])))
+                    elif "неделя" in tasckPeriodical[1].lower() or "недели" in tasckPeriodical[1].lower() or "недель" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
+                    else:
+                        try:
+                            int(tasckPeriodical[0])
+                            tmp = tasckPeriodical[-1].split(":")
+                            for i in tmp:
+                                tmp2 = int(i)
+                        except ValueError:
+                            self.add_error(
+                                None, "Ошибка, неправильно введён период повторения задачи")
+                else:
+                    return None
+            except ValueError:
+                self.add_error(
+                    None, "Ошибка, неправильно введён период повторения задачи")
         return tasckPeriodical

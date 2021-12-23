@@ -4,6 +4,7 @@ from .models import Tasck
 from django.http import HttpResponseNotFound
 from datetime import date, time, timedelta
 
+
 def index(request):
     form = TasckForm
     data = {
@@ -11,21 +12,23 @@ def index(request):
         "tascks": Tasck.objects.all()
     }
     return render(request, 'taskmanager/index.html', data)
+
 def form(request):
     error = ""
+    form = TasckForm
     if request.method == 'POST':
         form = TasckForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('index')
         else:
-            error = "Ошибка валидации, проверьте, правильно ли вы заполнили все поля, скорее всего ваша задача накладывается на другую задачу"
-    form = TasckForm
+            TasckForm()
     data ={
         "form": form,
         "error": error
     }
     return render(request, 'taskmanager/form.html', data)
+
 def edit(request, id):
     form = TasckForm(request.POST)
     data = {
@@ -42,13 +45,12 @@ def edit(request, id):
             return render(request, "taskmanager/index.html", data)
     except Tasck.DoesNotExist:
         return HttpResponseNotFound("<h2>Task not found</h2>")
+
 def edit_task(request, id):
     form = TasckForm(instance=Tasck.objects.get(id=id))
-    error = ""
     data = {
         "form": form,
         "tascks": Tasck.objects.get(id=id),
-        "error": error
     }
     try:
         task = Tasck.objects.get(id=id)
@@ -79,16 +81,15 @@ def edit_task(request, id):
                     seconds=int(str(request.POST.get("tasckTravelTime")).split(":")[2])
                 )
                 task.tasckStatusPeriodical = bool(request.POST.get("tasckStatusPeriodical"))
-                if task.tasckPeriodical != None:
+                if task.tasckPeriodical != None and task.tasckStatusPeriodical:
                     task.tasckPeriodical = request.POST.get("tasckPeriodical")
                 task.save()
                 return redirect('index')
             else:
-                error = "Ошибка валидации, проверьте, правильно ли вы заполнили все поля, скорее всего ваша задача накладывается на другую задачу, в связи с чем система отменила изминение задачи"
+                TasckForm()
                 data = {
                     "form": form,
                     "tascks": Tasck.objects.get(id=id),
-                    "error": error
                 }
                 return render(request, "taskmanager/form_edit.html", data)
     except Tasck.DoesNotExist:
