@@ -126,7 +126,7 @@ class TasckForm(ModelForm):
         tasckId = self.cleaned_data["tasckId"]
         for i in range(1, len(Tasck.objects.all())+1):
             task = Tasck.objects.get(tasckId=i)
-            if not task.tasckStatus and len(Tasck.objects.all())>1 and tasckId != i:
+            if not task.tasckStatus and tasckId != i:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
                         self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))
@@ -140,7 +140,6 @@ class TasckForm(ModelForm):
         else:
             try:
                 tasckPeriodical = tasckPeriodical.split()
-                print(tasckPeriodical)
                 if len(tasckPeriodical) > 0 and tasckPeriodical[0] != 'None':
                     if "день" in tasckPeriodical[1].lower() or "дня" in tasckPeriodical[1].lower() or "дней" in tasckPeriodical[1].lower():
                         tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
@@ -168,7 +167,7 @@ class TasckForm(ModelForm):
         return tasckPeriodical
 
     def clean_tasckId(self):
-        data = self.cleaned_data["tasckId"]
-        if data == None:
-            data = len(Tasck.objects.all())+1
-        return data
+        tasckId = self.cleaned_data["tasckId"]
+        if tasckId == None:
+            tasckId = len(Tasck.objects.all())+1
+        return tasckId

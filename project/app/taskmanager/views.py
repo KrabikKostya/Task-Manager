@@ -14,7 +14,6 @@ def index(request):
     return render(request, 'taskmanager/index.html', data)
 
 def form(request):
-    error = ""
     form = TasckForm
     if request.method == 'POST':
         form = TasckForm(request.POST)
@@ -25,7 +24,6 @@ def form(request):
             TasckForm()
     data ={
         "form": form,
-        "error": error
     }
     return render(request, 'taskmanager/form.html', data)
 
@@ -83,6 +81,7 @@ def edit_task(request, id):
                 task.tasckStatusPeriodical = bool(request.POST.get("tasckStatusPeriodical"))
                 if task.tasckPeriodical != None and task.tasckStatusPeriodical:
                     task.tasckPeriodical = request.POST.get("tasckPeriodical")
+                task.tasckId = request.POST.get("tasckId")
                 task.save()
                 return redirect('index')
             else:
