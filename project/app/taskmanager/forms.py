@@ -25,55 +25,55 @@ class TasckForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tasckTitle"].widget.attrs.update({
-            "class": "input-text",
+            "class": "input-text input",
             "placeholder": "Название задачи",
             "size": "50"
         })
         self.fields["tasckDescription"].required = False
         self.fields["tasckDescription"].widget.attrs.update({
-            "class": "input-text",
+            "class": "input-text input",
             "placeholder": "Описание задачи",
             "size": "50",
         })
         self.fields["tasckStartOfTheEventDate"].widget.attrs.update({
             "type": "datetime",
             "id": "datepicker",
-            "class": "date-text",
+            "class": "date-text input",
             "placeholder": "Начало мероприятия (день.месяц.год)",
             "size": "50",
         })
         self.fields["tasckStartOfTheEventTime"].widget.attrs.update({
             "type": "datetime",
-            "class": "date-text",
+            "class": "date-text input",
             "placeholder": "Начало мероприятия (часы:минуты:секунды)",
             "size": "50",
         })
         self.fields["tasckDuration"].widget.attrs.update({
             "type": "time",
-            "class": "input-text",
+            "class": "input-text input",
             "placeholder": "Продолжительность мероприятия (часы:минуты:секунды)",
             "size": "50"
         })
         self.fields["tasckPlace"].widget.attrs.update({
-            "class": "input-text",
+            "class": "input-text input",
             "placeholder": "Место проведения мероприятия мероприятия",
             "size": "50"
         })
         self.fields["tasckTravelTime"].widget.attrs.update({
             "type": "time",
-            "class": "input-text",
+            "class": "input-text input",
             "placeholder": "Время на дорогу (часы:минуты:секунды)",
             "size": "50"
         })
         self.fields["tasckStatus"].widget.attrs.update({
-            "class": "input-chack checkbox__input",
+            "class": "input-chack checkbox__input input",
             "id": "tasckStatus",
             "size": "50",
             "onchange":"fun1()"
         })
         self.fields["tasckStatusPeriodical"].required = False
         self.fields["tasckStatusPeriodical"].widget.attrs.update({
-            "class": "input-chack",
+            "class": "input-chack input",
             "id": "tasckStatus",
             "size": "50",
             "onchange": "fun1()",
@@ -82,7 +82,7 @@ class TasckForm(ModelForm):
         self.fields["tasckPeriodical"].required = False
         self.fields["tasckPeriodical"].widget.attrs.update({
             "type": "time",
-            "class": "input-text hidden",
+            "class": "input-text hidden input",
             "placeholder": "Период следующего напоминания (дни часы:минуты:секунды)",
             "size": "50",
             "id": "tasckPeriodical"

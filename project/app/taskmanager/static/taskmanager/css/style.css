@@ -249,6 +249,10 @@ input[type="checkbox"]{
     .btn-form {
         bottom: 25px;
     }
+
+    .input{
+        width: 800px;
+    }
 }
 
 @media (min-width: 800px) {
@@ -266,6 +270,10 @@ input[type="checkbox"]{
 
     .body p {
         font-size: calc(15px + 8.5 * ((100vw) / 1536));
+    }
+
+    .input {
+        width: 1920px;
     }
 
     .btn-form {
@@ -286,15 +294,12 @@ form{
     display: block;
 }
 
-input{
-    width: 425%;
-}
-
 input#tasckStatusPeriodical {
     width: 10%;
 }
 
 .errorlist li{
     border: none;
-    color: red
+    color: red;
+    width: 100vw;
 }
