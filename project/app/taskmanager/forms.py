@@ -109,6 +109,7 @@ class TasckForm(ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        tasckTitle = self.cleaned_data["tasckTitle"]
         tasckStartOfTheEventDate = self.cleaned_data["tasckStartOfTheEventDate"]
         try:
             tasckDuration = self.cleaned_data["tasckDuration"]
@@ -126,6 +127,8 @@ class TasckForm(ModelForm):
         tasckId = self.cleaned_data["tasckId"]
         for i in range(1, len(Tasck.objects.all())+1):
             task = Tasck.objects.get(tasckId=i)
+            if task.tasckTitle == tasckTitle and tasckId != i:
+                self.add_error(None, "Название задачи должно быть уникальным")
             if not task.tasckStatus and tasckId != i:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
