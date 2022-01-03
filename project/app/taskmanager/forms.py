@@ -18,7 +18,8 @@ class TasckForm(ModelForm):
             "tasckStatus",
             "tasckStatusPeriodical",
             "tasckPeriodical",
-            "tasckId"
+            "tasckId",
+            "isDelate"
         ]
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -86,6 +87,10 @@ class TasckForm(ModelForm):
             "id": "tasckPeriodical"
         })
         self.fields["tasckId"].required = False
+        self.fields["isDelate"].required = False
+        self.fields["isDelate"].widget.attrs.update({
+            "style": "display: none;"
+        })
 
     def clean_tasckTitle(self):
         tasckTitle = self.cleaned_data["tasckTitle"]
@@ -125,9 +130,9 @@ class TasckForm(ModelForm):
         tasckId = self.cleaned_data["tasckId"]
         for i in range(1, len(Tasck.objects.all())+1):
             task = Tasck.objects.get(tasckId=i)
-            if task.tasckTitle == tasckTitle and tasckId != i:
-                self.add_error(None, "Название задачи должно быть уникальным")
-            if not task.tasckStatus and tasckId != i:
+            if task.tasckTitle == tasckTitle and tasckId != i and not task.isDelate:
+                self.add_error(None, "Название задачи должно быть уникальным, на данный момент оно такоеже, как у задачи: "+str(task.tasckTitle))
+            if not task.tasckStatus and tasckId != i and not task.isDelate:
                 if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
                     if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
                         self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))

@@ -9,7 +9,10 @@ def index(request):
     form = TasckForm
     data = {
         "form": form,
-        "tascks": Tasck.objects.all().order_by('-tasckId')
+        "tascks": Tasck.objects.all().order_by('-tasckId'),
+        "n": len(Tasck.objects.all().filter(tasckStatus=False)),
+        "m": len(Tasck.objects.all().filter(tasckStatus=True)),
+        "d": len(Tasck.objects.all().filter(isDelate=True)),
     }
     return render(request, 'taskmanager/index.html', data)
 
@@ -37,6 +40,7 @@ def edit(request, id):
         task = Tasck.objects.get(id=id)
         if request.method == "POST":
             task.tasckStatus = bool(request.POST.get("tasckStatus"))
+            task.isDelate = bool(request.POST.get("isDelate"))
             task.save()
             return redirect('index')
         else:

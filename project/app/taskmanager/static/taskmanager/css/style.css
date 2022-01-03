@@ -1,3 +1,4 @@
+
 @charset "UTF-8";
 
 * {
@@ -382,4 +383,32 @@ input#tasckStatusPeriodical {
 
 .task__edit-delate {
     display: flex;
+}
+
+.content__text{
+    position: absolute;
+    left: 40%;
+    right: 40%;
+    top: 49%;
+    bottom: 49%;
+    color: rgba(255, 255, 255, 0.5);
+    user-select: none;
+    font-size: 25px;
+}
+
+.btn-delate {
+    display: flex;
+    border-radius: 50%;
+    border: 1px solid;
+    padding: 5px;
+    margin-left: 25px;
+    text-align: center;
+    width: 35px;
+    height: 35px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-delate:hover {
+    background: rgba(255, 0, 0, 0.5);
 }

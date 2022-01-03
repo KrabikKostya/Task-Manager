@@ -11,5 +11,6 @@ class Tasck(models.Model):
     tasckStatusPeriodical = models.BooleanField("Задача переодическая ?")
     tasckPeriodical = models.CharField("Период, через который нужно напоминать", null=True, max_length=100)
     tasckId = models.IntegerField("ID задачи", null=True)
+    isDelate = models.BooleanField("Задача удалена ?")
     def __str__(self):
         return self.tasckTitle
