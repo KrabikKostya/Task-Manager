@@ -81,7 +81,7 @@ class TasckForm(ModelForm):
         self.fields["tasckPeriodical"].widget.attrs.update({
             "type": "time",
             "class": "input-text hidden input",
-            "placeholder": "Период следующего напоминания (дни часы:минуты:секунды)",
+            "placeholder": "Период следующего напоминания (например: 2 дня, 1 час, 5 лет)",
             "size": "50",
             "id": "tasckPeriodical"
         })

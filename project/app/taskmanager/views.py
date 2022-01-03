@@ -94,3 +94,11 @@ def edit_task(request, id):
     except Tasck.DoesNotExist:
         return HttpResponseNotFound("<h2>Task not found</h2>")
     return render(request, "taskmanager/form_edit.html", data)
+
+
+def calendar(request):
+    data = {
+        "form": form,
+        "tascks": Tasck.objects.all()
+    }
+    return render(request, 'taskmanager/calendar.html', data)
