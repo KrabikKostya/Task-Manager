@@ -1,27 +1,64 @@
+<!DOCTYPE html>
 {% extends "base.html" %}
 {% load static %}
     {% block content %}
-        <a href="{% url 'form' %}" class="btn-form"> + </a>
         <div class="wrapper">
             <div class="conteiner">
                 <div class="content">
+                    <ul class="nav">
+                        <li class="btn">
+                            <a href="{% url 'form' %}" class="btn-form">
+                                ➕
+                            </a>
+                        </li>
+                        <li class="btn">
+                            <a href="{% url 'calendar' %}" class="btn-calendar">
+                                📅
+                            </a>
+                        </li>
+                        <li class="btn main" style="margin-bottom: 0px;margin-top: 0px;">
+                            <a href="{% url 'index' %}" class="btn-calendar">
+                                🏠
+                            </a>
+                        </li>
+                    </ul>
                     {% if tascks %}
                         <div class="task-list">
                             <ul>
+                                <li class="task__complete">
+                                    Невыполненные задачи:
+                                </li>
                                 {% for a in tascks %}
-                                    <li class="task">
-                                        {% if a.tasckStatus %}
-                                            <p class="dark">
-                                                {% comment %} <img src="{% static 'taskmanager/img/icons/checkbox.png' %}"> {% endcomment %}{{a.id}}. {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
-                                            </p>
-                                        {% else %}
+                                    {% if a.tasckStatus %}
+                                        {% comment %} pass {% endcomment %}
+                                    {% else %}
+                                        <li class="task">
                                             <form id="form" action="{% url 'edit' a.id %}" method="POST">
                                                 {% csrf_token %}
-                                                <button type="submit" name="save{{ a.id }}" class="btn" style="display: none">qwertyuiop</button>{{ form.tasckStatus }}{{a.id}}. {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}} 
+                                                <button type="submit" name="save{{ a.id }}" class="btn" style="display: none">
+                                                    qwertyuiop
+                                                </button>
+                                                {{ form.tasckStatus }} {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
                                             </form>
-                                            <a href="{% url 'edit_task' a.id %}" class="btn-edit">🖋</a>
-                                        {% endif %}
-                                    </li>
+                                            <span class="task__edit-delate">
+                                                <a href="{% url 'edit_task' a.id %}" class="btn-edit">
+                                                    ✏️
+                                                </a>
+                                            </span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                <li class="task__complete">
+                                    Выполненные задачи:
+                                </li>
+                                {% for a in tascks %}
+                                    {% if a.tasckStatus %}
+                                        <li class="task">
+                                            <p class="dark">
+                                                {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
+                                            </p>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -29,7 +66,9 @@
                         <div class="wrapper">
                             <div class="conteiner">
                                 <div class="content">
-                                    Пока что у вас нет задач<br>
+                                    <p>
+                                        Пока что у вас нет задач
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -37,5 +76,6 @@
                 </div>
             </div>
         </div>
-        <script src="{% static 'taskmanager/js/scripts.js' %}"></script>
+        <script src="{% static 'taskmanager/js/scripts.js' %}">
+        </script>
     {% endblock %}

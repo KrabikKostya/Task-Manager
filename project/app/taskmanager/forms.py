@@ -1,9 +1,7 @@
 from typing import ParamSpecArgs
 from datetime import timedelta
 from .models import Tasck
-from django.forms import ModelForm, ValidationError
-#from django.core.exceptions import ValidationError
-from django.core.exceptions import NON_FIELD_ERRORS
+from django.forms import ModelForm
 
 
 class TasckForm(ModelForm):
@@ -66,14 +64,14 @@ class TasckForm(ModelForm):
             "size": "50"
         })
         self.fields["tasckStatus"].widget.attrs.update({
-            "class": "input-chack checkbox__input input",
+            "class": "input-chack checkbox__input",
             "id": "tasckStatus",
             "size": "50",
             "onchange":"fun1()"
         })
         self.fields["tasckStatusPeriodical"].required = False
         self.fields["tasckStatusPeriodical"].widget.attrs.update({
-            "class": "input-chack input",
+            "class": "input-chack",
             "id": "tasckStatus",
             "size": "50",
             "onchange": "fun1()",

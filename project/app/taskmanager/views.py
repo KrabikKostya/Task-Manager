@@ -1,15 +1,15 @@
+from datetime import date, timedelta, time
 from django.shortcuts import render, redirect
 from .forms import TasckForm
 from .models import Tasck
 from django.http import HttpResponseNotFound
-from datetime import date, time, timedelta
 
 
 def index(request):
     form = TasckForm
     data = {
         "form": form,
-        "tascks": Tasck.objects.all()
+        "tascks": Tasck.objects.all().order_by('-tasckId')
     }
     return render(request, 'taskmanager/index.html', data)
 
