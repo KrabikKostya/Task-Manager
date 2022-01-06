@@ -1,31 +1,42 @@
+from datetime import datetime
+from .utils import Calendar
+from .models import *
+from django.utils.safestring import mark_safe
+from django.views import generic
+from django.http import HttpResponse
+from django.shortcuts import render
+from datetime import date, timedelta, time
 from django.shortcuts import render, redirect
 from .forms import TasckForm
 from .models import Tasck
 from django.http import HttpResponseNotFound
-from datetime import date, time, timedelta
+
 
 def index(request):
     form = TasckForm
     data = {
         "form": form,
-        "tascks": Tasck.objects.all()
+        "tascks": Tasck.objects.all().order_by('-tasckId'),
+        "n": len(Tasck.objects.all().filter(tasckStatus=False)),
+        "m": len(Tasck.objects.all().filter(tasckStatus=True)),
+        "d": len(Tasck.objects.all().filter(isDelate=True)),
     }
     return render(request, 'taskmanager/index.html', data)
+
 def form(request):
-    error = ""
+    form = TasckForm
     if request.method == 'POST':
         form = TasckForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('index')
         else:
-            error = "Ошибка валидации, проверьте, правильно ли вы заполнили все поля, скорее всего ваша задача накладывается на другую задачу"
-    form = TasckForm
+            TasckForm()
     data ={
         "form": form,
-        "error": error
     }
     return render(request, 'taskmanager/form.html', data)
+
 def edit(request, id):
     form = TasckForm(request.POST)
     data = {
@@ -36,19 +47,19 @@ def edit(request, id):
         task = Tasck.objects.get(id=id)
         if request.method == "POST":
             task.tasckStatus = bool(request.POST.get("tasckStatus"))
+            task.isDelate = bool(request.POST.get("isDelate"))
             task.save()
             return redirect('index')
         else:
             return render(request, "taskmanager/index.html", data)
     except Tasck.DoesNotExist:
         return HttpResponseNotFound("<h2>Task not found</h2>")
+
 def edit_task(request, id):
     form = TasckForm(instance=Tasck.objects.get(id=id))
-    error = ""
     data = {
         "form": form,
         "tascks": Tasck.objects.get(id=id),
-        "error": error
     }
     try:
         task = Tasck.objects.get(id=id)
@@ -79,18 +90,35 @@ def edit_task(request, id):
                     seconds=int(str(request.POST.get("tasckTravelTime")).split(":")[2])
                 )
                 task.tasckStatusPeriodical = bool(request.POST.get("tasckStatusPeriodical"))
-                if task.tasckPeriodical != None:
+                if task.tasckPeriodical != None and task.tasckStatusPeriodical:
                     task.tasckPeriodical = request.POST.get("tasckPeriodical")
+                task.tasckId = request.POST.get("tasckId")
                 task.save()
                 return redirect('index')
             else:
-                error = "Ошибка валидации, проверьте, правильно ли вы заполнили все поля, скорее всего ваша задача накладывается на другую задачу, в связи с чем система отменила изминение задачи"
+                TasckForm()
                 data = {
                     "form": form,
                     "tascks": Tasck.objects.get(id=id),
-                    "error": error
                 }
                 return render(request, "taskmanager/form_edit.html", data)
     except Tasck.DoesNotExist:
         return HttpResponseNotFound("<h2>Task not found</h2>")
     return render(request, "taskmanager/form_edit.html", data)
+
+class CalendarView(generic.ListView):
+    model = Tasck
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        d = get_date(self.request.GET.get('day', None))
+        cal = Calendar(d.year, d.month)
+        html_cal = cal.formatmonth(withyear=True)
+        context['calendar'] = mark_safe(html_cal)
+        return context
+
+def get_date(req_day):
+    if req_day:
+        year, month = (int(x) for x in req_day.split('-'))
+        return date(year, month, day=1)
+    return datetime.today()

@@ -1,1 +1,5 @@
 db.sqlite3
+<<<<<<< HEAD
+private_key.pem
+public_key.pem
+0001_initial.py

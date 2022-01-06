@@ -1,39 +1,62 @@
+<!DOCTYPE html>
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="wrapper">
-    <div class="conteiner">
-        <div class="content">
-            <div class="form">
-                {{ form.tasckStartOfTheEventDate.errors }}<br>
-                <form action="{% url 'edit_task' tascks.id %}" method="post" class="form-horizontal">
-                    {% csrf_token %}
-                    {{ form.tasckTitle }}<br>
-                    {{ form.tasckDescription }}<br>
-                    {{ form.tasckStartOfTheEventDate }}<br>
-                    {{ form.tasckStartOfTheEventTime}}<br>
-                    {{ form.tasckDuration }}<br>
-                    {{ form.tasckTravelTime }}<br>
-                    {{ form.tasckPlace }}<br>
-                    Нужно повторять задачу ? {{form.tasckStatusPeriodical}}
-                    {{ form.tasckPeriodical }}<br>
-                    <button type="submit" class="btn">
-                        Обновить заметку
-                    </button>
-                    <span>
-                        {{ error }}
-                    </span>
-                </form>
+    <body class="lock">
+        <div class="wrapper">
+            <div class="conteiner">
+                <div class="content">
+                    <div class="form">
+                        <ul class="nav">
+                            <li class="btn">
+                                <a href="{% url 'form' %}" class="btn-form">
+                                    ➕
+                                </a>
+                            </li>
+                            <li class="btn">
+                                <a href="{% url 'calendar' %}" class="btn-calendar">
+                                    📅
+                                </a>
+                            </li>
+                            <li class="btn main" style="margin-bottom: 0px;margin-top: 0px;">
+                                <a href="{% url 'index' %}" class="btn-calendar">
+                                    🏠
+                                </a>
+                            </li>
+                        </ul>
+                        {{ form.tasckStartOfTheEventDate.errors }}<br>
+                        <form action="{% url 'edit_task' tascks.id %}" method="post" class="form-horizontal">
+                            {% csrf_token %}
+                            {{ form.tasckTitle }}<br>
+                            {{ form.tasckDescription }}<br>
+                            {{ form.tasckStartOfTheEventDate }}<br>
+                            {{ form.tasckStartOfTheEventTime}}<br>
+                            {{ form.tasckDuration }}<br>
+                            {{ form.tasckTravelTime }}<br>
+                            {{ form.tasckPlace }}<br>
+                            <p class="p">
+                                Нужно повторять задачу ? {{form.tasckStatusPeriodical}}
+                            </p>
+                            {{ form.tasckPeriodical }}<br>
+                            <button type="submit" class="button">
+                                Обновить заметку
+                            </button>
+                            {{ form.tasckId.as_hidden }}<br>
+                            <span>
+                                {{ form.non_field_errors }}
+                            </span>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-    <script src="{% static 'taskmanager/js/jquery-3.6.0.js' %}"></script>
-    <script src="{% static 'taskmanager/js/calendar.js' %}"></script>
-    <script src="{% static 'taskmanager/js/pereodical.js' %}"></script>
-    <script>
-        $( function() {
-            $( "#datepicker" ).datepicker();
-    } );
-    </script>
+        <script src="{% static 'taskmanager/js/jquery-3.6.0.js' %}"></script>
+        <script src="{% static 'taskmanager/js/calendar.js' %}"></script>
+        <script src="{% static 'taskmanager/js/pereodical.js' %}"></script>
+        <script>
+            $( function() {
+                $( "#datepicker" ).datepicker();
+        } );
+        </script>
+    </body>
 {% endblock %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div class="wrapper">
+        <div class="conteiner">
+            <div class="content">
+                <ul class="nav">
+                    <li class="btn">
+                        <a href="{% url 'form' %}" class="btn-form">
+                            ➕
+                        </a>
+                    </li>
+                    <li class="btn">
+                        <a href="{% url 'calendar' %}" class="btn-calendar">
+                            📅
+                        </a>
+                    </li>
+                    <li class="btn main" style="margin-bottom: 0px;margin-top: 0px;">
+                        <a href="{% url 'index' %}" class="btn-calendar">
+                            🏠
+                        </a>
+                    </li>
+                </ul>
+                {{ calendar }}
+            </div>
+        </div>
+    </div>
+    {% comment %} <script src="{% static 'taskmanager/js/scripts.js' %}"></script> {% endcomment %}
+{% endblock %}

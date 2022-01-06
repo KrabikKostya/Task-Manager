@@ -1,7 +1,7 @@
 'use strict';
 function fun1() {
     var checkbox = document.getElementById('tasckStatusPeriodical');
-	var fild = document.getElementById('tasckPeriodical')
+	var fild = document.getElementById('tasckPeriodical');
 	if (checkbox.checked) {
 		fild.classList.add("shown");
 		fild.classList.remove("hidden");
