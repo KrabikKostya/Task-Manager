@@ -2,6 +2,7 @@ from typing import ParamSpecArgs
 from datetime import timedelta
 from .models import Tasck
 from django.forms import ModelForm
+from django.utils import timezone
 
 
 class TasckForm(ModelForm):
@@ -114,29 +115,33 @@ class TasckForm(ModelForm):
         cleaned_data = super().clean()
         tasckTitle = self.cleaned_data["tasckTitle"]
         tasckStartOfTheEventDate = self.cleaned_data["tasckStartOfTheEventDate"]
-        try:
-            tasckDuration = self.cleaned_data["tasckDuration"]
-        except KeyError:
-            self.add_error(None, "Неправильно введена продолжительность мероприятия")
-        try:
-            tasckTravelTime = self.cleaned_data["tasckTravelTime"]
-        except KeyError:
-            self.add_error(None, "Неправильно введено время на дорогу")
-        try:
-            tasckStartOfTheEventTime = self.cleaned_data["tasckStartOfTheEventTime"]
-            tasckStartOfTheEventTime1 = timedelta(seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
-        except KeyError:
-            self.add_error(None, "Неправильно введено время на дорогу")
         tasckId = self.cleaned_data["tasckId"]
-        for i in range(1, len(Tasck.objects.all())+1):
-            task = Tasck.objects.get(tasckId=i)
-            if task.tasckTitle == tasckTitle and tasckId != i and not task.isDelate:
-                self.add_error(None, "Название задачи должно быть уникальным, на данный момент оно такоеже, как у задачи: "+str(task.tasckTitle))
-            if not task.tasckStatus and tasckId != i and not task.isDelate:
-                if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
-                    if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
-                        self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))
-        return cleaned_data
+        now = [timezone.now().year, timezone.now().month, timezone.now().day]
+        if tasckStartOfTheEventDate.year >= now[0] and tasckStartOfTheEventDate.month >= now[1] and tasckStartOfTheEventDate.day >= now[2]:
+            try:
+                tasckDuration = self.cleaned_data["tasckDuration"]
+            except KeyError:
+                self.add_error(None, "Неправильно введена продолжительность мероприятия")
+            try:
+                tasckTravelTime = self.cleaned_data["tasckTravelTime"]
+            except KeyError:
+                self.add_error(None, "Неправильно введено время на дорогу")
+            try:
+                tasckStartOfTheEventTime = self.cleaned_data["tasckStartOfTheEventTime"]
+                tasckStartOfTheEventTime1 = timedelta(seconds=tasckStartOfTheEventTime.second, minutes=tasckStartOfTheEventTime.minute, hours=tasckStartOfTheEventTime.hour)
+            except KeyError:
+                self.add_error(None, "Неправильно введено время на дорогу")
+            for i in range(1, len(Tasck.objects.all())+1):
+                task = Tasck.objects.get(tasckId=i)
+                if task.tasckTitle == tasckTitle and tasckId != i and not task.isDelate and not task.tasckStatus:
+                    self.add_error(None, "Название задачи должно быть уникальным, на данный момент оно такоеже, как у задачи: "+str(task.tasckTitle))
+                if not task.tasckStatus and tasckId != i and not task.isDelate:
+                    if tasckStartOfTheEventDate == task.tasckStartOfTheEventDate:
+                        if tasckStartOfTheEventTime1 <= timedelta(seconds=task.tasckStartOfTheEventTime.second, minutes=task.tasckStartOfTheEventTime.minute, hours=task.tasckStartOfTheEventTime.hour) <= tasckStartOfTheEventTime1 + tasckDuration + tasckTravelTime*2:
+                            self.add_error(None, ("Ваша задача накладывается на другую задачу: "+str(task)))
+            return cleaned_data
+        else:
+            self.add_error(None, "Вы планируете задачу на прошлое")
 
     def clean_tasckPeriodical(self):
         tasckPeriodical = self.cleaned_data.get("tasckPeriodical")
