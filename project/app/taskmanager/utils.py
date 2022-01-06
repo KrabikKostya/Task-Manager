@@ -8,27 +8,22 @@ class Calendar(HTMLCalendar):
 		self.month = month
 		super(Calendar, self).__init__()
 
-	# formats a day as a td
-	# filter events by day
 	def formatday(self, day, events):
 		events_per_day = events.filter(tasckStartOfTheEventDate__day=day)
 		d = ''
 		for event in events_per_day:
-			d += f'<li> {event.tasckTitle} </li>'
-
+			if not event.tasckStatus and not event.isDelate:
+				d += f'<li class=\"calendar__task\"> {event.tasckTitle} </li>'
 		if day != 0:
-			return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
+			return f"<td><span class='date'>{day}</span><ul class=\"calendar__list\"> {d} </ul></td>"
 		return '<td></td>'
 
-	# formats a week as a tr 
 	def formatweek(self, theweek, events):
 		week = ''
 		for d, weekday in theweek:
 			week += self.formatday(d, events)
 		return f'<tr> {week} </tr>'
 
-	# formats a month as a table
-	# filter events by year and month
 	def formatmonth(self, withyear=True):
 		events = Tasck.objects.filter(
 			tasckStartOfTheEventDate__year=self.year, tasckStartOfTheEventDate__month=self.month)
