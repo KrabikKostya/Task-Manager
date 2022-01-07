@@ -13,7 +13,7 @@ class Calendar(HTMLCalendar):
 		d = ''
 		for event in events_per_day:
 			if not event.tasckStatus and not event.isDelate:
-				d += f'<li class=\"calendar__task\"> {event.tasckTitle} </li>'
+				d += f'<li class=\"calendar__task\"> {event.tasckTitle} </li> <br>'
 		if day != 0:
 			return f"<td><span class='date'>{day}</span><ul class=\"calendar__list\"> {d} </ul></td>"
 		return '<td></td>'
