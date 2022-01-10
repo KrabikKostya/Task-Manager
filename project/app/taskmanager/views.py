@@ -1,15 +1,12 @@
-from datetime import datetime
+from datetime import datetime, time, date, timedelta
 from .utils import Calendar
 from .models import *
 from django.utils.safestring import mark_safe
 from django.views import generic
-from django.http import HttpResponse
-from django.shortcuts import render
-from datetime import date, timedelta, time
 from django.shortcuts import render, redirect
 from .forms import TasckForm
-from .models import Tasck
 from django.http import HttpResponseNotFound
+from django.utils import timezone
 
 
 def index(request):
@@ -21,6 +18,19 @@ def index(request):
         "m": len(Tasck.objects.all().filter(tasckStatus=True)),
         "d": len(Tasck.objects.all().filter(isDelate=True)),
     }
+    periodicalTasks = Tasck.objects.all().filter(
+        tasckStatusPeriodical=True, isDelate=False, tasckStatus=False)
+    now = timedelta(hours=timezone.now().hour+2, minutes=timezone.now().minute, seconds=timezone.now().second)
+    taskTime = None
+    for i in periodicalTasks:
+        taskTime = timedelta(hours=i.tasckStartOfTheEventTime.hour, minutes=i.tasckStartOfTheEventTime.minute, seconds=i.tasckStartOfTheEventTime.second)
+        if i.tasckStartOfTheEventDate >= timezone.now().date() and taskTime >= now:
+            if "day," in i.tasckPeriodical.split():
+                i.tasckStartOfTheEventDate = date(year=i.tasckStartOfTheEventDate.year, month=i.tasckStartOfTheEventDate.month, day=i.tasckStartOfTheEventDate.day+int(i.tasckPeriodical.split()[0]))
+                i.tasckStatus = False
+            else:
+                i.tasckStartOfTheEventTime = time(hour=i.tasckStartOfTheEventTime.hour + int(i.tasckPeriodical.split()[2].split()[0]), minute=i.tasckStartOfTheEventTime.minute + int(i.tasckPeriodical.split()[2].split()[1]), second=i.tasckStartOfTheEventTime.second + int(i.tasckPeriodical.split()[2].split()[2]))
+        i.save()
     return render(request, 'taskmanager/index.html', data)
 
 def form(request):
@@ -32,7 +42,7 @@ def form(request):
             return redirect('index')
         else:
             TasckForm()
-    data ={
+    data = {
         "form": form,
     }
     return render(request, 'taskmanager/form.html', data)
@@ -70,7 +80,7 @@ def edit_task(request, id):
                 task.tasckDescription = request.POST.get("tasckDescription")
                 task.tasckStartOfTheEventDate = date(
                     day=int(str(request.POST.get("tasckStartOfTheEventDate")).split(".")[0]),
-                    month = int(str(request.POST.get("tasckStartOfTheEventDate")).split(".")[1]),
+                    month=int(str(request.POST.get("tasckStartOfTheEventDate")).split(".")[1]),
                     year=int(str(request.POST.get("tasckStartOfTheEventDate")).split(".")[2])
                 )
                 task.tasckStartOfTheEventTime = time(
@@ -90,8 +100,33 @@ def edit_task(request, id):
                     seconds=int(str(request.POST.get("tasckTravelTime")).split(":")[2])
                 )
                 task.tasckStatusPeriodical = bool(request.POST.get("tasckStatusPeriodical"))
-                if task.tasckPeriodical != None and task.tasckStatusPeriodical:
-                    task.tasckPeriodical = request.POST.get("tasckPeriodical")
+                tasckPeriodical = str(request.POST.get("tasckPeriodical"))
+                tasckPeriodical = tasckPeriodical.split()
+                if len(tasckPeriodical) > 1 and tasckPeriodical[0] != 'None':
+                    if "день" in tasckPeriodical[1].lower() or "дня" in tasckPeriodical[1].lower() or "дней" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
+                    elif "месяц" in tasckPeriodical[1].lower() or "месяцев" in tasckPeriodical[1].lower() or "месяца" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*30.4167))
+                    elif "год" in tasckPeriodical[1].lower() or "года" in tasckPeriodical[1].lower() or "лет" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0])*365.25))
+                    elif "час" in tasckPeriodical[1].lower() or "часа" in tasckPeriodical[1].lower() or "часов" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(hours=round(int(tasckPeriodical[0])))
+                    elif "минута" in tasckPeriodical[1].lower() or "минут" in tasckPeriodical[1].lower() or "минуты" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(minutes=round(int(tasckPeriodical[0])))
+                    elif "неделя" in tasckPeriodical[1].lower() or "недели" in tasckPeriodical[1].lower() or "недель" in tasckPeriodical[1].lower():
+                        tasckPeriodical = timedelta(days=round(int(tasckPeriodical[0]))*7)
+                    else:
+                        try:
+                            tmp = int(tasckPeriodical[0])
+                            for i in tasckPeriodical[-1].split(":"):
+                                tmp = int(i)
+                        except ValueError:
+                            task.tasckPeriodical = None
+                            task.tasckId = request.POST.get("tasckId")
+                            task.save()
+                task.tasckPeriodical = ""
+                for i in str(tasckPeriodical).split():
+                    task.tasckPeriodical += i
                 task.tasckId = request.POST.get("tasckId")
                 task.save()
                 return redirect('index')

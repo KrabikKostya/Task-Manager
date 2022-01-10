@@ -1,4 +1,3 @@
-from typing import ParamSpecArgs
 from datetime import timedelta
 from .models import Tasck
 from django.forms import ModelForm
@@ -22,6 +21,7 @@ class TasckForm(ModelForm):
             "tasckId",
             "isDelate"
         ]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tasckTitle"].widget.attrs.update({
@@ -69,7 +69,7 @@ class TasckForm(ModelForm):
             "class": "input-chack checkbox__input",
             "id": "tasckStatus",
             "size": "50",
-            "onchange":"fun1()"
+            "onchange": "fun1()"
         })
         self.fields["tasckStatusPeriodical"].required = False
         self.fields["tasckStatusPeriodical"].widget.attrs.update({
@@ -147,11 +147,11 @@ class TasckForm(ModelForm):
         tasckPeriodical = self.cleaned_data.get("tasckPeriodical")
         tasckPeriodical = str(tasckPeriodical)
         if tasckPeriodical.isupper():
-            return str(tasckPeriodical).lower()
+            self.add_error(None, "Ошибка, неправильно введён период повторения задачи, проверьте регист слов, введённых вами")
         else:
             try:
                 tasckPeriodical = tasckPeriodical.split()
-                if len(tasckPeriodical) > 0 and tasckPeriodical[0] != 'None':
+                if len(tasckPeriodical) > 1 and tasckPeriodical[0] != 'None':
                     if "день" in tasckPeriodical[1].lower() or "дня" in tasckPeriodical[1].lower() or "дней" in tasckPeriodical[1].lower():
                         tasckPeriodical = timedelta(days=int(tasckPeriodical[0]))
                     elif "месяц" in tasckPeriodical[1].lower() or "месяцев" in tasckPeriodical[1].lower() or "месяца" in tasckPeriodical[1].lower():
