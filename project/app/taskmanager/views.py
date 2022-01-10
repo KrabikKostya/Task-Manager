@@ -18,8 +18,7 @@ def index(request):
         "m": len(Tasck.objects.all().filter(tasckStatus=True)),
         "d": len(Tasck.objects.all().filter(isDelate=True)),
     }
-    periodicalTasks = Tasck.objects.all().filter(
-        tasckStatusPeriodical=True, isDelate=False, tasckStatus=False)
+    periodicalTasks = Tasck.objects.all().filter(tasckStatusPeriodical=True, isDelate=False, tasckStatus=False)
     now = timedelta(hours=timezone.now().hour+2, minutes=timezone.now().minute, seconds=timezone.now().second)
     taskTime = None
     for i in periodicalTasks:
@@ -27,6 +26,7 @@ def index(request):
         if i.tasckStartOfTheEventDate >= timezone.now().date() and taskTime >= now:
             if "day," in i.tasckPeriodical.split():
                 i.tasckStartOfTheEventDate = date(year=i.tasckStartOfTheEventDate.year, month=i.tasckStartOfTheEventDate.month, day=i.tasckStartOfTheEventDate.day+int(i.tasckPeriodical.split()[0]))
+                i.tasckStartOfTheEventTime = time(hour=i.tasckStartOfTheEventTime.hour + int(i.tasckPeriodical.split()[2].split()[0]), minute=i.tasckStartOfTheEventTime.minute + int(i.tasckPeriodical.split()[2].split()[1]), second=i.tasckStartOfTheEventTime.second + int(i.tasckPeriodical.split()[2].split()[2]))
                 i.tasckStatus = False
             else:
                 i.tasckStartOfTheEventTime = time(hour=i.tasckStartOfTheEventTime.hour + int(i.tasckPeriodical.split()[2].split()[0]), minute=i.tasckStartOfTheEventTime.minute + int(i.tasckPeriodical.split()[2].split()[1]), second=i.tasckStartOfTheEventTime.second + int(i.tasckPeriodical.split()[2].split()[2]))
