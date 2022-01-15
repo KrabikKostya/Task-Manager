@@ -409,12 +409,14 @@ input#tasckStatusPeriodical {
 .calendar tr,
 .calendar td {
     border: 1px solid #fff;
+    background-color: transparent;
 }
 
 .calendar th {
     padding: 10px;
     text-align: center;
     font-size: 18px;
+    background-color: transparent;
 }
 
 .calendar td {
@@ -434,6 +436,7 @@ input#tasckStatusPeriodical {
 .calendar__list {
     height: 100%;
     padding: 0px 5px 0px 20px;
+    background-color: transparent;
 }
 
 .calendar {
@@ -462,4 +465,5 @@ li {
     margin: 0;
     width: auto;
     list-style: square outside;
+    background-color: transparent;
 }
