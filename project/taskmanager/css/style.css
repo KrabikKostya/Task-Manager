@@ -99,7 +99,7 @@ h3 {
 }
 
 * {
-    background: rgb(32, 32, 32);
+    background: rgb(25, 25, 35);
     color: rgb(255, 255, 255);
     transition: all 0.5s;
     font-size: 15px;
@@ -169,11 +169,11 @@ p {
 }
 
 .btn-edit:hover {
-    background: rgba(255, 255, 128, 0.5);
+    background: rgba(255, 255, 128);
 }
 
 .btn-form:hover {
-    background: rgba(128, 255, 128, 0.5);
+    background: rgba(128, 255, 128);
 }
 
 input {
@@ -396,7 +396,7 @@ input#tasckStatusPeriodical {
 }
 
 .btn-delate:hover {
-    background: rgba(255, 0, 0, 0.5);
+    background: rgba(255, 0, 0);
 }
 
 .calendar {

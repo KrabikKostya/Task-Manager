@@ -4,7 +4,6 @@ main.py
 taskmanager/urls.py
 models.py
 scripts.js
-pereodical.js
 calendar.js
 style.css
 base.html

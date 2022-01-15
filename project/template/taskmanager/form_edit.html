@@ -52,7 +52,24 @@
         </div>
         <script src="{% static 'taskmanager/js/jquery-3.6.0.js' %}"></script>
         <script src="{% static 'taskmanager/js/calendar.js' %}"></script>
-        <script src="{% static 'taskmanager/js/pereodical.js' %}"></script>
+        <script>
+            'use strict';
+            var checkbox = document.getElementById('tasckStatusPeriodical');
+            var fild = document.getElementById('tasckPeriodical');
+            if (checkbox.checked) {
+                fild.classList.add("shown");
+                fild.classList.remove("hidden");
+            }
+            function fun1() {
+                if (checkbox.checked) {
+                    fild.classList.add("shown");
+                    fild.classList.remove("hidden");
+                }else{
+                    fild.classList.add("hidden");
+                    fild.classList.remove("shown");
+                }
+            }
+        </script>
         <script>
             $( function() {
                 $( "#datepicker" ).datepicker();

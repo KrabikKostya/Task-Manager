@@ -1,3 +1,4 @@
+import calendar
 from datetime import datetime, time, date, timedelta
 from .utils import Calendar
 from .models import *
@@ -11,26 +12,66 @@ from django.utils import timezone
 
 def index(request):
     form = TasckForm
-    data = {
-        "form": form,
-        "tascks": Tasck.objects.all().order_by('-tasckId'),
-        "n": len(Tasck.objects.all().filter(tasckStatus=False)),
-        "m": len(Tasck.objects.all().filter(tasckStatus=True)),
-        "d": len(Tasck.objects.all().filter(isDelate=True)),
-    }
-    periodicalTasks = Tasck.objects.all().filter(tasckStatusPeriodical=True, isDelate=False, tasckStatus=False)
+    periodicalTasks = Tasck.objects.all().filter(tasckStatusPeriodical=True, isDelate=False)
+    m = len(Tasck.objects.all().filter(tasckStatus=True, isDelate=False))
     now = timedelta(hours=timezone.now().hour+2, minutes=timezone.now().minute, seconds=timezone.now().second)
     taskTime = None
-    for i in periodicalTasks:
-        taskTime = timedelta(hours=i.tasckStartOfTheEventTime.hour, minutes=i.tasckStartOfTheEventTime.minute, seconds=i.tasckStartOfTheEventTime.second)
-        if i.tasckStartOfTheEventDate >= timezone.now().date() and taskTime >= now:
-            if "day," in i.tasckPeriodical.split():
-                i.tasckStartOfTheEventDate = date(year=i.tasckStartOfTheEventDate.year, month=i.tasckStartOfTheEventDate.month, day=i.tasckStartOfTheEventDate.day+int(i.tasckPeriodical.split()[0]))
-                i.tasckStartOfTheEventTime = time(hour=i.tasckStartOfTheEventTime.hour + int(i.tasckPeriodical.split()[2].split()[0]), minute=i.tasckStartOfTheEventTime.minute + int(i.tasckPeriodical.split()[2].split()[1]), second=i.tasckStartOfTheEventTime.second + int(i.tasckPeriodical.split()[2].split()[2]))
-                i.tasckStatus = False
-            else:
-                i.tasckStartOfTheEventTime = time(hour=i.tasckStartOfTheEventTime.hour + int(i.tasckPeriodical.split()[2].split()[0]), minute=i.tasckStartOfTheEventTime.minute + int(i.tasckPeriodical.split()[2].split()[1]), second=i.tasckStartOfTheEventTime.second + int(i.tasckPeriodical.split()[2].split()[2]))
-        i.save()
+    t = None
+    for i in range(1, len(Tasck.objects.all())+1):
+        t = Tasck.objects.get(id=i)
+        if t in periodicalTasks:
+            taskTime = timedelta(hours=t.tasckStartOfTheEventTime.hour, minutes=t.tasckStartOfTheEventTime.minute, seconds=t.tasckStartOfTheEventTime.second)
+            if t.tasckStartOfTheEventDate == timezone.now().date() and taskTime <= now:
+                if "day," in t.tasckPeriodical.split():
+                    try:
+                        t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month, day=t.tasckStartOfTheEventDate.day+int(t.tasckPeriodical.split()[0]))
+                    except ValueError:
+                        try:
+                            t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1, day=t.tasckStartOfTheEventDate.day+int(t.tasckPeriodical.split()[0])-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+                        except ValueError:
+                            t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year+1, month=t.tasckStartOfTheEventDate.month+1-12, day=t.tasckStartOfTheEventDate.day+int(t.tasckPeriodical.split()[0])-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+                else:
+                    try:
+                        t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour, minute=t.tasckStartOfTheEventTime.minute + int(t.tasckPeriodical.split()[0].split(":")[1]), second=t.tasckStartOfTheEventTime.second)
+                    except ValueError:
+                        try:
+                            t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + 1, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                        except ValueError:
+                            try:
+                                t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + 1 - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                                t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month, day=t.tasckStartOfTheEventDate.day+1)
+                            except ValueError:
+                                try:
+                                    t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + 1 - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                                    t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1, day=t.tasckStartOfTheEventDate.day+1-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+                                except ValueError:
+                                    t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + 1 - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                                    t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year+1, month=t.tasckStartOfTheEventDate.month+1-12, day=t.tasckStartOfTheEventDate.day+1-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+                    try:
+                        t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + int(t.tasckPeriodical.split()[0].split(":")[0]), minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                    except ValueError:
+                        try:
+                            t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + int(t.tasckPeriodical.split()[0].split(":")[0]) - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                            t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month, day=t.tasckStartOfTheEventDate.day+1)
+                        except ValueError:
+                            try:
+                                t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + int(t.tasckPeriodical.split()[0].split(":")[0]) - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                                t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1, day=t.tasckStartOfTheEventDate.day+1-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+                            except ValueError:
+                                t.tasckStartOfTheEventTime = time(hour=t.tasckStartOfTheEventTime.hour + int(t.tasckPeriodical.split()[0].split(":")[0]) - 24, minute=t.tasckStartOfTheEventTime.minute, second=t.tasckStartOfTheEventTime.second)
+                                t.tasckStartOfTheEventDate = date(year=t.tasckStartOfTheEventDate.year+1, month=t.tasckStartOfTheEventDate.month+1-12, day=t.tasckStartOfTheEventDate.day+1-(calendar.monthrange(t.tasckStartOfTheEventDate.year, month=t.tasckStartOfTheEventDate.month+1)[1]))
+            if t.tasckStatus:
+                m -=1
+                t.tasckStatus = False
+            t.save()
+    data = {
+        "form": form,
+        "tascks": Tasck.objects.all().filter(tasckStatusPeriodical=False).order_by('-tasckId'),
+        "periodicalTasks": periodicalTasks.order_by('-tasckId'),
+        "n": len(Tasck.objects.all().filter(tasckStatus=False, tasckStatusPeriodical=False, isDelate=False)),
+        "m": m,
+        "p": len(periodicalTasks),
+    }
     return render(request, 'taskmanager/index.html', data)
 
 def form(request):
@@ -125,8 +166,22 @@ def edit_task(request, id):
                             task.tasckId = request.POST.get("tasckId")
                             task.save()
                 task.tasckPeriodical = ""
-                for i in str(tasckPeriodical).split():
-                    task.tasckPeriodical += i
+                tasckPeriodical = list(str(tasckPeriodical))
+                i = 0
+                c = len(tasckPeriodical)
+                while i < c:
+                    if not tasckPeriodical[i].isdigit():
+                        if not(tasckPeriodical[i] in " day, :"):
+                            tasckPeriodical.pop(i)
+                            c -= 1
+                            i = 0
+                    i += 1
+                for j in tasckPeriodical:
+                    task.tasckPeriodical += j
+                if task.tasckPeriodical[0].isdigit():
+                    task.tasckPeriodical = task.tasckPeriodical
+                else:
+                    task.tasckPeriodical = task.tasckPeriodical[1:]
                 task.tasckId = request.POST.get("tasckId")
                 task.save()
                 return redirect('index')

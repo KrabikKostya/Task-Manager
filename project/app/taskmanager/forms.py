@@ -147,7 +147,7 @@ class TasckForm(ModelForm):
         tasckPeriodical = self.cleaned_data.get("tasckPeriodical")
         tasckPeriodical = str(tasckPeriodical)
         if tasckPeriodical.isupper():
-            self.add_error(None, "Ошибка, неправильно введён период повторения задачи, проверьте регист слов, введённых вами")
+            self.add_error(None, "Ошибка, неправильно введён период повторения задачи, помните, что все буквы должны быть маленькими")
         else:
             try:
                 tasckPeriodical = tasckPeriodical.split()

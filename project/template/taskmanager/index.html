@@ -25,7 +25,46 @@
                 {% if tascks %}
                     <div class="task-list">
                         <ul>
-                            {% if n > 0 and n != d%}
+                            {% if p > 0%}
+                                <li class="task__complete">
+                                    Задачи с переодичностью:
+                                </li>
+                                {% for a in periodicalTasks %}
+                                    {% if a.isDelate %}
+                                        {% comment %}
+                                            pass
+                                        {% endcomment %}
+                                    {% else %}
+                                        {% if a.tasckStatus %}
+                                            {% comment %}
+                                                pass
+                                            {% endcomment %}
+                                        {% else %}
+                                            <li class="task">
+                                                <form class="form" action="{% url 'edit' a.id %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <button type="submit" name="save{{ a.id }}" class="btn__none" style="display: none">
+                                                        qwertyuiop
+                                                    </button>
+                                                    {{ form.tasckStatus }} {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
+                                                </form>
+                                                <span class="task__edit-delate">
+                                                    <a href="{% url 'edit_task' a.id %}" class="btn-edit">
+                                                        ✏️
+                                                    </a>
+                                                    
+                                                    <form class="form-delate" action="{% url 'edit' a.id %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="button" class="btn-delate" id="delate{{a.id}}" value="🗑️">
+                                                        {{ form.isDelate }}
+                                                    </form>
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            {% if n > 0%}
                                 <li class="task__complete">
                                     Невыполненные задачи:
                                 </li>
@@ -52,12 +91,10 @@
                                                     <a href="{% url 'edit_task' a.id %}" class="btn-edit">
                                                         ✏️
                                                     </a>
-                                                    <input type="button" class="btn-delate" id="delate{{a.id}}" value="🗑️">
+                                                    
                                                     <form class="form-delate" action="{% url 'edit' a.id %}" method="POST">
                                                         {% csrf_token %}
-                                                        <button type="submit" name="delate{{ a.id }}" class="button-delate" style="display: none">
-                                                            qwerty
-                                                        </button>
+                                                        <input type="button" class="btn-delate" id="delate{{a.id}}" value="🗑️">
                                                         {{ form.isDelate }}
                                                     </form>
                                                 </span>
@@ -65,7 +102,7 @@
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}
-                            {% elif n == d and m == 0 %}
+                            {% elif n == 0 and m == 0 %}
                                 <div class="wrapper">
                                     <div class="conteiner">
                                         <div class="content">
@@ -81,12 +118,18 @@
                                     Выполненные задачи:
                                 </li>
                                 {% for a in tascks %}
-                                    {% if a.tasckStatus %}
-                                        <li class="task">
-                                            <p class="dark">
-                                                {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
-                                            </p>
-                                        </li>
+                                    {% if a.isDelate %}
+                                        {% comment %}
+                                            pass
+                                        {% endcomment %}
+                                    {% else %}
+                                        {% if a.tasckStatus %}
+                                            <li class="task">
+                                                <p class="dark">
+                                                    {{a}}, {{a.tasckStartOfTheEventDate}} {{a.tasckStartOfTheEventTime}}, {{a.tasckPlace}}
+                                                </p>
+                                            </li>
+                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
@@ -122,13 +165,12 @@
     <script>
         'use strict';
         var delate = document.querySelectorAll("input.btn-delate");
-        var buttonDelate = document.querySelectorAll('.button-delate');
         var formDelate = document.querySelectorAll(".form-delate");
         for (let index = 0; index < delate.length; index++) {
             delate[index].onclick = function(){
-                for (let i = 0; i < buttonDelate.length; i++) {
-                    buttonDelate[i].form[2].checked = !buttonDelate[i].form[2].checked
-                    formDelate[i].submit();
+                for (let i = 0; i < delate.length; i++) {
+                    delate[index].form[2].checked = !delate[index].form[2].checked
+                    formDelate[index].submit();
                     break;
                 }
             };
