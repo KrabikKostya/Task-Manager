@@ -169,11 +169,11 @@ p {
 }
 
 .btn-edit:hover {
-    background: rgba(255, 255, 128);
+    background: rgba(255, 255, 128, 0.75);
 }
 
 .btn-form:hover {
-    background: rgba(128, 255, 128);
+    background: rgba(128, 255, 128, 0.75);
 }
 
 input {
@@ -334,11 +334,11 @@ input#tasckStatusPeriodical {
 }
 
 .btn-calendar:hover {
-    background: rgba(128, 255, 128, 0.5);
+    background: rgba(128, 255, 128, 0.75);
 }
 
 .btn-main:hover {
-    background: rgba(128, 255, 128, 0.5);
+    background: rgba(128, 255, 128, 0.75);
 }
 
 .p {
@@ -393,10 +393,11 @@ input#tasckStatusPeriodical {
     height: 35px;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .btn-delate:hover {
-    background: rgba(255, 0, 0);
+    background: rgba(255, 0, 0, 0.75);
 }
 
 .calendar {
